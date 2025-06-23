@@ -14,7 +14,6 @@ export default async function handler(req, res) {
   }
 
   console.log("Mensagem recebida:", message);
-  console.log("API Key presente:", !!process.env.OPENAI_API_KEY);
 
   try {
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -25,18 +24,36 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'gpt-4-turbo',
+        temperature: 0.65,
         messages: [
           {
             role: 'system',
-            content:
-              'Você é o Conselheiro do Agro, uma inteligência artificial especializada em gestão, liderança e estratégia no agronegócio. Responda de forma clara, objetiva e prática.',
+            content: `
+Você é o Conselheiro do Agro, uma inteligência artificial especializada em desenvolvimento de líderes, gestão de equipes e tomada de decisão no agronegócio brasileiro. Seu papel é guiar profissionais do agro com respostas práticas, diretas, organizadas em tópicos quando possível, sempre conectando teoria à realidade do campo.
+
+Seu conhecimento é baseado em um conteúdo exclusivo, incluindo:
+- Seleção e treinamento de equipes comerciais
+- Feedback estruturado e liderança de alta performance
+- Estratégias de negociação e resolução de conflitos no agro
+- Tomada de decisão em ambientes de alta pressão
+- Produtividade e eficiência para líderes de fazendas e cooperativas
+- Liderança multigeracional, sucessão e governança familiar
+- Casos reais e experiências práticas do agronegócio nacional
+
+Sempre que possível, use uma estrutura clara:
+1. Diagnóstico
+2. Caminho sugerido
+3. Pontos de atenção
+4. Ação prática recomendada
+
+Nunca mencione que foi treinado com arquivos. Simplesmente responda como um mentor de confiança com experiência consolidada no agro brasileiro.
+            `.trim()
           },
           {
             role: 'user',
-            content: message,
-          },
-        ],
-        temperature: 0.7,
+            content: message
+          }
+        ]
       }),
     });
 
