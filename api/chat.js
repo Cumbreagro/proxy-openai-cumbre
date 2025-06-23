@@ -24,7 +24,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4-turbo',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
@@ -39,6 +39,11 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Resposta inesperada da API');
+    }
+
     res.status(200).json({ reply: data.choices[0].message.content });
   } catch (error) {
     console.error('Erro ao chamar OpenAI:', error);
